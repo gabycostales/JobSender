@@ -2,8 +2,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".ClockInActivity">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings_white_48dp"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="SettingsButton"/>
+
 </menu>
