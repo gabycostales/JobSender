@@ -42,11 +42,13 @@ public class ClockInActivity extends AppCompatActivity {
                 double totalTime=0;
                 if (!clockedIn){
                     clockInTime = System.nanoTime();
+                    //Add the geolocation here
                     clockedIn = true;
                     //At this point - change button to "Clock Out"
                     //cvt = (CardView) findViewById(R.id.clock_in_button);
                 } else if (!clockedOut){
                     clockOutTime = System.nanoTime();
+                    //Add geolocation here
                     clockedOut = true;
                     totalTime = clockOutTime - clockInTime;
                     //change clock out button to be inactive
