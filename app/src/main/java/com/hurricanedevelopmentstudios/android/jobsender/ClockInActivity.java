@@ -18,6 +18,14 @@ public class ClockInActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private TextView mTextView;
 
+    boolean clockedIn = false;
+    boolean clockedOut = false;
+    double clockInTime = 0;
+    double clockOutTime = 0;
+    String clockInLoc = null;
+    String clockOutLoc = null;
+    double totalTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,23 +37,16 @@ public class ClockInActivity extends AppCompatActivity {
 
         //
         CardView cvt = (CardView)findViewById(R.id.time_card_view);
-        cvt.setOnClickListener(new View.OnClickListener()
-        boolean clockedIn = false;
-        boolean clockedOut = false; {
+        cvt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //3 states: before clock in, clocked in, clocked out
-                double clockInTime=0;
-                double clockOutTime=0;
-                String clockInLoc = null;
-                String clockOutLoc = null;
-                double totalTime=0;
+                // 3 states: before clock in, clocked in, clocked out
                 if (!clockedIn){
                     clockInTime = System.nanoTime();
                     //Add the geolocation here
                     clockedIn = true;
                     //At this point - change button to "Clock Out"
-                    //cvt = (CardView) findViewById(R.id.clock_in_button);
+                    // cvt = (CardView) findViewById(R.id.clock_in_button);
                 } else if (!clockedOut){
                     clockOutTime = System.nanoTime();
                     //Add geolocation here
@@ -53,10 +54,10 @@ public class ClockInActivity extends AppCompatActivity {
                     totalTime = clockOutTime - clockInTime;
                     //change clock out button to be inactive
                 } else if (clockedIn && clockedOut){
-                    AlertDialog.Builder builder = new AlertDialog().Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
                     builder.setTitle("Job Summary");
                     builder.setMessage("You worked a total of " + totalTime + " hours. \n Press the SEND button to send this job to your employer.");
-                    builder.setPositiveButton("YES", null);
+                    builder.setPositiveButton("Ok", null);
                     builder.show();
                 }
             }
