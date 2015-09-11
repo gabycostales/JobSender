@@ -36,7 +36,7 @@ public class ClockInActivity extends AppCompatActivity {
     String clockOutLoc = null;
     boolean clockedIn = false;
     boolean clockedOut = false;
-    Location loc;
+    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class ClockInActivity extends AppCompatActivity {
                     String inTimestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                     Log.d(inTimestamp, "Timestamp in");
                     //Find location
-                    clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + loc.getLatitude() + "+" + loc.getLongitude();
+                    clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
                     Log.d(clockInLoc, "Location In");
                     //Know you clocked in
                     clockedIn = true;
@@ -77,7 +77,7 @@ public class ClockInActivity extends AppCompatActivity {
                     Log.d(String.valueOf(clockOutTime), "clockout ns");
                     String outTimestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                     Log.d(outTimestamp, "Timestamp out");
-                    clockOutLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + loc.getLatitude() + "+" + loc.getLongitude();
+                    clockOutLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
                     Log.d(clockOutLoc, "Location Out");
                     clockedOut = true;
                     totalTime = clockOutTime - clockInTime;
