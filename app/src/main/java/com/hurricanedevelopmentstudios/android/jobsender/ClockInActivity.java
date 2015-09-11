@@ -1,11 +1,15 @@
 package com.hurricanedevelopmentstudios.android.jobsender;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 public class ClockInActivity extends AppCompatActivity {
 
@@ -20,6 +24,41 @@ public class ClockInActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        //
+        CardView cvt = (CardView)findViewById(R.id.time_card_view);
+        cvt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        CardView cvc = (CardView)findViewById(R.id.clear_card_view);
+        cvc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
+                    builder.setTitle("Are you sure?");
+                    builder.setMessage("Are you sure you want to delete your clock in data? \n" +
+                            "You will not be able to retrieve any clock in times and locations.");
+                            builder.setPositiveButton("YES", null);
+                    builder.setNegativeButton("Cancel", null);
+                    builder.show();
+            }
+        });
+
+        CardView cvs = (CardView)findViewById(R.id.send_card_view);
+        cvs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
+                builder.setTitle("Send Confirmation");
+                builder.setMessage("Are you sure you want to send these times and locations?");
+                builder.setPositiveButton("YES", null);
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
+            }
+        });
 
     }
 
