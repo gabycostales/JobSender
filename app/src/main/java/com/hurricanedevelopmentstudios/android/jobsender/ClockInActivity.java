@@ -29,22 +29,14 @@ public class ClockInActivity extends AppCompatActivity {
     private TextView mClockOutTextView;
     private CardView cvt;
 
-    double clockInTime=0;
-    double clockOutTime=0;
+    double clockInTime = 0;
+    double clockOutTime= 0;
     double totalTime = 0;
     String clockInLoc = null;
     String clockOutLoc = null;
     boolean clockedIn = false;
     boolean clockedOut = false;
     Location loc;
-
-    boolean clockedIn = false;
-    boolean clockedOut = false;
-    double clockInTime = 0;
-    double clockOutTime = 0;
-    String clockInLoc = null;
-    String clockOutLoc = null;
-    double totalTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,21 +51,11 @@ public class ClockInActivity extends AppCompatActivity {
         mClockOutTextView = (TextView)findViewById(R.id.clockInTextView);
 
         //
-<<<<<<< HEAD
         cvt = (CardView)findViewById(R.id.time_card_view);
         cvt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //3 states: before clock in, clocked in, clocked out
-
-                double totalTime=0;
-=======
-        CardView cvt = (CardView)findViewById(R.id.time_card_view);
-        cvt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 // 3 states: before clock in, clocked in, clocked out
->>>>>>> origin/master
                 if (!clockedIn){
                     //Find time
                     clockInTime = System.nanoTime();
@@ -88,12 +70,8 @@ public class ClockInActivity extends AppCompatActivity {
                     //Add time to clock in UI
                     //mClockInTextView.setText(R.string.);
                     //At this point - change button to "Clock Out"
-<<<<<<< HEAD
                     cvt.setCardBackgroundColor(R.color.red);
                     mClockTextView.setText(R.string.clock_out_text);
-=======
-                    // cvt = (CardView) findViewById(R.id.clock_in_button);
->>>>>>> origin/master
                 } else if (!clockedOut){
                     clockOutTime = System.nanoTime();
                     Log.d(String.valueOf(clockOutTime), "clockout ns");
@@ -108,20 +86,12 @@ public class ClockInActivity extends AppCompatActivity {
                     cvt.setCardBackgroundColor(R.color.material_grey_600);
                     mClockTextView.setText(R.string.done_button);
                 } else if (clockedIn && clockedOut){
-<<<<<<< HEAD
                     //This all may not be necessary - we'll see.
 //                    AlertDialog.Builder builder = new AlertDialog().Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
 //                    builder.setTitle("Job Summary");
 //                    builder.setMessage("You worked a total of " + totalTime + " hours. \n Press the SEND button to send this job to your employer.");
 //                    builder.setPositiveButton("YES", null);
 //                    builder.show();
-=======
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
-                    builder.setTitle("Job Summary");
-                    builder.setMessage("You worked a total of " + totalTime + " hours. \n Press the SEND button to send this job to your employer.");
-                    builder.setPositiveButton("Ok", null);
-                    builder.show();
->>>>>>> origin/master
                 }
             }
         });
