@@ -19,8 +19,12 @@ public class SettingsActivity extends AppCompatActivity {
         // enable toolbar action items
         mToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
