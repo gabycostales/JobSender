@@ -5,6 +5,8 @@
 
     <string name="clock_in_button">Clock In</string>
     <string name="clock_out_button">Clock Out</string>
+    <string name="done_button">Done</string>
+
 
     <string name="clock_in_text">Clock In Time:</string>
     <string name="clock_out_text">Clock Out Time:</string>

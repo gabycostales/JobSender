@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/no_time"
-                    android:id="@+id/textView3"/>
+                    android:id="@+id/clockInTextView"/>
             </LinearLayout>
 
             <LinearLayout
@@ -107,15 +107,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/clock_out_text"
-                    android:id="@+id/textView2"/>
+                    android:text="@string/clock_out_text"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/no_time"
-                    android:id="@+id/textView4"/>
+                    android:id="@+id/clockOutTextView"/>
             </LinearLayout>
 
 
