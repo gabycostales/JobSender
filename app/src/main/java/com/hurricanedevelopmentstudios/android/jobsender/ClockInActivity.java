@@ -10,10 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class ClockInActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +29,34 @@ public class ClockInActivity extends AppCompatActivity {
 
         //
         CardView cvt = (CardView)findViewById(R.id.time_card_view);
-        cvt.setOnClickListener(new View.OnClickListener() {
+        cvt.setOnClickListener(new View.OnClickListener()
+        boolean clockedIn = false;
+        boolean clockedOut = false; {
             @Override
             public void onClick(View v) {
-
+                //3 states: before clock in, clocked in, clocked out
+                double clockInTime=0;
+                double clockOutTime=0;
+                String clockInLoc = null;
+                String clockOutLoc = null;
+                double totalTime=0;
+                if (!clockedIn){
+                    clockInTime = System.nanoTime();
+                    clockedIn = true;
+                    //At this point - change button to "Clock Out"
+                    //cvt = (CardView) findViewById(R.id.clock_in_button);
+                } else if (!clockedOut){
+                    clockOutTime = System.nanoTime();
+                    clockedOut = true;
+                    totalTime = clockOutTime - clockInTime;
+                    //change clock out button to be inactive
+                } else if (clockedIn && clockedOut){
+                    AlertDialog.Builder builder = new AlertDialog().Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
+                    builder.setTitle("Job Summary");
+                    builder.setMessage("You worked a total of " + totalTime + " hours. \n Press the SEND button to send this job to your employer.");
+                    builder.setPositiveButton("YES", null);
+                    builder.show();
+                }
             }
         });
 
