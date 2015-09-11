@@ -38,10 +38,10 @@ public class ClockInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
-                    builder.setTitle("Are you sure?");
-                    builder.setMessage("Are you sure you want to delete your clock in data? \n" +
-                            "You will not be able to retrieve any clock in times and locations.");
-                            builder.setPositiveButton("YES", null);
+                    builder.setTitle("Clear Confirmation");
+                    builder.setMessage("Are you sure you want to delete your clock in data?" +
+                            " You will not be able to retrieve any of the information from this job.");
+                    builder.setPositiveButton("YES", null);
                     builder.setNegativeButton("Cancel", null);
                     builder.show();
             }
