@@ -20,6 +20,10 @@
 
     <string name="title_activity_settings">Settings</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="user_name_title">Your Full Name</string>
+    <string name="subject_line_title">Default Subject Line</string>
+    <string name="recipients_title">Email Recipients</string>
+    <string name="recipients_subtitle">You may enter in more than one email address, please separate them with a ;</string>
+    <string name="save_button">Save</string>
 
 </resources>
