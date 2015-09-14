@@ -131,7 +131,8 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/client_text_field" />
+                android:hint="@string/client_text_field"
+                android:id="@+id/client_etext_field"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Job Description -->
@@ -145,6 +146,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/desc_etext_field"
                 android:hint="@string/desc_text_field" />
         </android.support.design.widget.TextInputLayout>
 

@@ -1,5 +1,6 @@
 package com.hurricanedevelopmentstudios.android.jobsender;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.location.Location;
 import android.location.LocationListener;
@@ -27,6 +29,9 @@ public class ClockInActivity extends AppCompatActivity {
     private TextView mClockTextView;
     private TextView mClockInTextView;
     private TextView mClockOutTextView;
+    private EditText mClient;
+    private EditText mDescription;
+
     private CardView cvt;
 
     double clockInTime = 0;
@@ -46,11 +51,13 @@ public class ClockInActivity extends AppCompatActivity {
         // enable toolbar action items
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        // Text View objects
         mClockTextView = (TextView)findViewById(R.id.timeTextView);
         mClockInTextView = (TextView)findViewById(R.id.clockInTextView);
         mClockOutTextView = (TextView)findViewById(R.id.clockInTextView);
 
-        //
+        // Clock In and Out
         cvt = (CardView)findViewById(R.id.time_card_view);
         cvt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +103,7 @@ public class ClockInActivity extends AppCompatActivity {
             }
         });
 
+        // Delete clock in and out information
         CardView cvc = (CardView)findViewById(R.id.clear_card_view);
         cvc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +118,7 @@ public class ClockInActivity extends AppCompatActivity {
             }
         });
 
+        // SEND
         CardView cvs = (CardView)findViewById(R.id.send_card_view);
         cvs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +126,32 @@ public class ClockInActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
                 builder.setTitle("Send Confirmation");
                 builder.setMessage("Are you sure you want to send these times and locations?");
-                builder.setPositiveButton("YES", null);
+                builder.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Grab information
+                        mClient = (EditText) findViewById(R.id.client_etext_field);
+                        String clientName = mClient.getText().toString();
+                        mDescription = (EditText) findViewById(R.id.desc_etext_field);
+                        String jobDesc = mDescription.getText().toString();
+                        // Compile email body
+
+                        // Send email
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    GMailSender sender = new GMailSender("jobsendernoreply@gmail.com",
+                                            "g33k$r00l");
+                                    sender.sendMail(Preferences.getStoredSubjectLine(getApplicationContext()),
+                                            "Body from JavaMail",
+                                            "jobsendernoreply@gmail.com",
+                                            Preferences.getStoredRecipients(getApplicationContext()));
+                                } catch (Exception e) {
+                                    Log.e("SendMail", e.getMessage(), e);
+                                }
+                            }
+                        }).start();
+                    }
+                });
                 builder.setNegativeButton("Cancel", null);
                 builder.show();
             }
