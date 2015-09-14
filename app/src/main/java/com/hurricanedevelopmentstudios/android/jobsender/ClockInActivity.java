@@ -15,11 +15,17 @@ import android.widget.TextView;
 import android.location.Location;
 import android.location.LocationListener;
 import android.widget.Toast;
-
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.*;
+import android.support.v4.app.FragmentActivity;
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.lang.Object;
+
 
 public class ClockInActivity extends AppCompatActivity {
 
@@ -50,7 +56,11 @@ public class ClockInActivity extends AppCompatActivity {
         mClockInTextView = (TextView)findViewById(R.id.clockInTextView);
         mClockOutTextView = (TextView)findViewById(R.id.clockInTextView);
 
-        //
+        //Build Google API Client - to use to grab location
+        MyLocation.buildGoogleApiClient();
+
+
+        //Set Activity for when user clocks in and out
         cvt = (CardView)findViewById(R.id.time_card_view);
         cvt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,4 +159,5 @@ public class ClockInActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
