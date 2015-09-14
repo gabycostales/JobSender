@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
  * Created by gaby on 9/11/15.
  * A convenient interface for reading and writing to and from shared preferences.
  */
+
 public class Preferences {
 
     private static final String PREF_NAME = "preferences";
@@ -45,6 +46,8 @@ public class Preferences {
                 .putString(PREF_SUBJECT, subject)
                 .apply();
     }
+
+
 
 
 
