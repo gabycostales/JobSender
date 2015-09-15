@@ -19,7 +19,7 @@ import java.io.OutputStream;
 import java.security.Security;
 import java.util.Properties;
 
-public class GMailSender extends javax.mail.Authenticator {
+class GMailSender extends javax.mail.Authenticator {
 
     private String mailhost = "smtp.gmail.com";
     private String user;

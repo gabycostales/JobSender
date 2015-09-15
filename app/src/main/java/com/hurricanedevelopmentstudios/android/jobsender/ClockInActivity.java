@@ -2,6 +2,7 @@ package com.hurricanedevelopmentstudios.android.jobsender;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,28 +21,35 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ClockInActivity extends AppCompatActivity {
 
+    // UI OBJECTS
     private Toolbar mToolbar;
     private TextView mClockTextView;
-    private TextView mClockInTextView;
-    private TextView mClockOutTextView;
+    private TextView mClockInTimeTV;
+    private TextView mClockOutTimeTV;
     private EditText mClient;
     private EditText mDescription;
-
     private CardView cvt;
 
+    // APP DATA
+    Date clockInDate;
+    Date clockOutDate;
+    String inTimeStamp;
+    String outTimeStamp;
     double clockInTime = 0;
-    double clockOutTime= 0;
+    double clockOutTime = 0;
     double totalTime = 0;
     String clockInLoc = null;
     String clockOutLoc = null;
     boolean clockedIn = false;
     boolean clockedOut = false;
     Location location;
+    String emailBody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,51 +62,72 @@ public class ClockInActivity extends AppCompatActivity {
 
         // Text View objects
         mClockTextView = (TextView)findViewById(R.id.timeTextView);
-        mClockInTextView = (TextView)findViewById(R.id.clockInTextView);
-        mClockOutTextView = (TextView)findViewById(R.id.clockInTextView);
+        mClockInTimeTV = (TextView)findViewById(R.id.clockInTimeTextView);
+        mClockOutTimeTV = (TextView)findViewById(R.id.clockOutTimeTextView);
+
 
         // Clock In and Out
         cvt = (CardView)findViewById(R.id.time_card_view);
         cvt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 3 states: before clock in, clocked in, clocked out
+
                 if (!clockedIn){
+                    clockedIn = true;
+
                     //Find time
                     clockInTime = System.nanoTime();
                     Log.d(String.valueOf(clockInTime), "clockin ns");
-                    String inTimestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                    Log.d(inTimestamp, "Timestamp in");
+                    clockInDate = new Date();
+                    inTimeStamp = new SimpleDateFormat("hh:mm a").format(clockInDate);
+
+                    // Show user time in text view
+                    mClockInTimeTV.setText(inTimeStamp);
+
                     //Find location
-                    clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
-                    Log.d(clockInLoc, "Location In");
-                    //Know you clocked in
-                    clockedIn = true;
-                    //Add time to clock in UI
-                    //mClockInTextView.setText(R.string.);
-                    //At this point - change button to "Clock Out"
-                    cvt.setCardBackgroundColor(R.color.red);
-                    mClockTextView.setText(R.string.clock_out_text);
+                    //clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
+                    //Log.d(clockInLoc, "Location In");
+
+                    // Change button
+                    cvt.setCardBackgroundColor(Color.parseColor("#FF5252"));
+                    mClockTextView.setText(R.string.clock_out_button);
+
                 } else if (!clockedOut){
+
+                    clockedOut = true;
+
+                    // Get Time
                     clockOutTime = System.nanoTime();
                     Log.d(String.valueOf(clockOutTime), "clockout ns");
-                    String outTimestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                    Log.d(outTimestamp, "Timestamp out");
-                    clockOutLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
-                    Log.d(clockOutLoc, "Location Out");
-                    clockedOut = true;
+                    clockOutDate  = new Date();
+                    outTimeStamp = new SimpleDateFormat("hh:mm a").format(clockOutDate);
+                    Log.d(outTimeStamp, "Timestamp out");
+
+                    // Show user time in text view
+                    mClockOutTimeTV.setText(outTimeStamp);
+
+                    // Get Location
+                    //clockOutLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
+                    //Log.d(clockOutLoc, "Location Out");
+
                     totalTime = clockOutTime - clockInTime;
                     Log.d(String.valueOf(totalTime), "Total time");
-                    //change clock out button to be inactive
+
+                    // change clock out button to be inactive
                     cvt.setCardBackgroundColor(R.color.material_grey_600);
                     mClockTextView.setText(R.string.done_button);
+
+                    // Alert user to hit send to send email
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
+                    builder.setTitle("Job Summary");
+                    builder.setMessage("You worked a total of " + totalTime + " hours." +
+                            "\n Press the SEND button to send this job to your employer.");
+                    builder.setPositiveButton("Ok", null);
+                    builder.show();
+
                 } else if (clockedIn && clockedOut){
-                    //This all may not be necessary - we'll see.
-//                    AlertDialog.Builder builder = new AlertDialog().Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
-//                    builder.setTitle("Job Summary");
-//                    builder.setMessage("You worked a total of " + totalTime + " hours. \n Press the SEND button to send this job to your employer.");
-//                    builder.setPositiveButton("YES", null);
-//                    builder.show();
+                    // This all may not be necessary - we'll see.
+                    // Button should do nothing
                 }
             }
         });
@@ -112,7 +141,12 @@ public class ClockInActivity extends AppCompatActivity {
                     builder.setTitle("Clear Confirmation");
                     builder.setMessage("Are you sure you want to delete your clock in data?" +
                             " You will not be able to retrieve any of the information from this job.");
-                    builder.setPositiveButton("YES", null);
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // CLEAR CLOCK IN DATA
+
+                        }
+                    });
                     builder.setNegativeButton("Cancel", null);
                     builder.show();
             }
@@ -126,7 +160,7 @@ public class ClockInActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
                 builder.setTitle("Send Confirmation");
                 builder.setMessage("Are you sure you want to send these times and locations?");
-                builder.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Grab information
                         mClient = (EditText) findViewById(R.id.client_etext_field);
@@ -134,7 +168,7 @@ public class ClockInActivity extends AppCompatActivity {
                         mDescription = (EditText) findViewById(R.id.desc_etext_field);
                         String jobDesc = mDescription.getText().toString();
                         // Compile email body
-
+                        emailBody = buildEmailBody();
                         // Send email
                         new Thread(new Runnable() {
                             public void run() {
@@ -142,7 +176,7 @@ public class ClockInActivity extends AppCompatActivity {
                                     GMailSender sender = new GMailSender("jobsendernoreply@gmail.com",
                                             "g33k$r00l");
                                     sender.sendMail(Preferences.getStoredSubjectLine(getApplicationContext()),
-                                            "Body from JavaMail",
+                                            emailBody,
                                             "jobsendernoreply@gmail.com",
                                             Preferences.getStoredRecipients(getApplicationContext()));
                                 } catch (Exception e) {
@@ -182,5 +216,29 @@ public class ClockInActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public String buildEmailBody() {
+        String body = "";
+
+        body += Preferences.getStoredUserName(getApplicationContext()) + "\n";
+
+        body += "Punch In: \t";
+        DateFormat calDateFormat = DateFormat.getDateInstance();
+        body += calDateFormat.format(clockInDate) + "\t";
+        body += inTimeStamp + "\n";
+
+        body += "Punch Out: \t";
+        body += calDateFormat.format(clockOutDate) + "\t";
+        body += outTimeStamp + "\n";
+
+        body += "Punch In Location: \n\n";
+        body += "Punch Out Location: \n\n";
+
+        body += "Client: \n" + mClient.getText().toString() + "\n";
+        body += "Description: \n" + mDescription.getText().toString();
+
+        Log.d("body", body);
+        return body;
     }
 }

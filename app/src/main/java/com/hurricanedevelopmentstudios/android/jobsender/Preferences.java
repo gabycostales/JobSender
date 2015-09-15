@@ -13,6 +13,10 @@ public class Preferences {
     private static final String PREF_NAME = "preferences";
     private static final String PREF_RECIPIENTS = "recipients";
     private static final String PREF_SUBJECT = "default_subject_line";
+    private static final String PREF_CLOCKINTIME = "clock_in_time";
+    private static final String PREF_CLOUCKOUTTIME = "clock_out_time";
+    private static final String PREF_CLOCKINLOC = "clock_in_location";
+    private static final String PREF_CLOCKOUTLOC = "clock_out_location";
 
     public static String getStoredUserName (Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_NAME,  null);

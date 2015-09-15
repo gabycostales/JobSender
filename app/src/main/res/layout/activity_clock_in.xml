@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/no_time"
-                    android:id="@+id/clockInTextView"/>
+                    android:id="@+id/clockInTimeTextView"/>
             </LinearLayout>
 
             <LinearLayout
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/no_time"
-                    android:id="@+id/clockOutTextView"/>
+                    android:id="@+id/clockOutTimeTextView"/>
             </LinearLayout>
 
 
@@ -244,6 +244,7 @@
                         android:textAllCaps="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#FFFFFF"/>
+
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
@@ -251,9 +252,5 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
-
-
-
 
 </RelativeLayout>
