@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.location.Location;
@@ -27,13 +26,13 @@ import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.lang.Object;
 
 
 public class ClockInActivity extends AppCompatActivity {
 
-    // UI OBJECTS
+    // Member variables
     private Toolbar mToolbar;
     private TextView mClockTextView;
     private TextView mClockInTimeTV;
@@ -42,19 +41,21 @@ public class ClockInActivity extends AppCompatActivity {
     private EditText mDescription;
     private CardView cvt;
 
-    // APP DATA
+    // non-persistent variables
     Date clockInDate;
     Date clockOutDate;
     String inTimeStamp;
     String outTimeStamp;
-    double clockInTime = 0;
-    double clockOutTime = 0;
-    double totalTime = 0;
+    long clockInDateMilis;
+    long clockOutDateMilis;
+
+    Location location;
     String clockInLoc = null;
     String clockOutLoc = null;
+
     boolean clockedIn = false;
     boolean clockedOut = false;
-    Location location;
+
     String emailBody;
 
     @Override
@@ -66,10 +67,53 @@ public class ClockInActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        // Text View objects
+        // References to inflated widgets
         mClockTextView = (TextView)findViewById(R.id.timeTextView);
-        mClockInTimeTV = (TextView)findViewById(R.id.clockInTimeTextView);
-        mClockOutTimeTV = (TextView)findViewById(R.id.clockOutTimeTextView);
+        mClockInTimeTV = (TextView)findViewById(R.id.clockInTextView);
+        mClockOutTimeTV = (TextView)findViewById(R.id.clockOutTextView);
+        mClient = (EditText) findViewById(R.id.client_etext_field);
+        mDescription = (EditText) findViewById(R.id.desc_etext_field);
+
+        // Populate data if user is still currently on a job but the activity died
+
+
+        clockInDateMilis = Preferences.getStoredClockInDate(getApplicationContext());
+        clockOutDateMilis = Preferences.getStoredClockOutDate(getApplicationContext());
+
+        if ( clockOutDateMilis != 0 ) {
+
+            clockedIn = true;
+            clockedOut = true;
+
+            clockInDate = new Date(clockInDateMilis);
+            inTimeStamp = new SimpleDateFormat("hh:mm a").format(clockInDate);
+            mClockInTimeTV.setText(inTimeStamp);
+            // pull clock in location because one must be saved
+
+            clockOutDate = new Date(clockOutDateMilis);
+            outTimeStamp = new SimpleDateFormat("hh:mm a").format(clockOutDate);
+            mClockOutTimeTV.setText(outTimeStamp);
+            // pull clock out location because one must be saved
+
+            setButtonToDone();
+
+        } else if ( clockInDateMilis != 0 ) {
+
+            clockedIn = true;
+
+            clockInDate = new Date(clockInDateMilis);
+            inTimeStamp = new SimpleDateFormat("hh:mm a").format(clockInDate);
+            mClockInTimeTV.setText(inTimeStamp);
+            // pull clock in location because one must be saved
+
+            setButtonToClockOut();
+
+
+        }
+
+
+        //Build Google API Client - to use to grab location
+        // MyLocation.buildGoogleApiClient();
 
         // Clock In and Out
         cvt = (CardView)findViewById(R.id.time_card_view);
@@ -78,20 +122,27 @@ public class ClockInActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!clockedIn){
+
                     clockedIn = true;
 
-                    //Find time
-                    clockInTime = System.nanoTime();
-                    Log.d(String.valueOf(clockInTime), "clockin ns");
+                    // Set clock in time
                     clockInDate = new Date();
+                    // save to shared preferences
+                    clockInDateMilis = clockInDate.getTime();
+                    Preferences.setStoredClockInDate(getApplicationContext(), clockInDateMilis);
+                    // update UI
                     inTimeStamp = new SimpleDateFormat("hh:mm a").format(clockInDate);
-
-                    // Show user time in text view
                     mClockInTimeTV.setText(inTimeStamp);
 
                     //Find location
                     //clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + locatioxdon.getLongitude();
                     //Log.d(clockInLoc, "Location In");
+                    // Set clock in location
+                    // pull location info
+                    // append string of google maps url with lat and long info
+                    // save to shared preferences as current job clock in location
+
+                    setButtonToClockOut();
 
                     // Change button
                     cvt.setCardBackgroundColor(Color.parseColor("#FF5252"));
@@ -101,38 +152,33 @@ public class ClockInActivity extends AppCompatActivity {
 
                     clockedOut = true;
 
-                    // Get Time
-                    clockOutTime = System.nanoTime();
-                    Log.d(String.valueOf(clockOutTime), "clockout ns");
+                    // Set clock out time
                     clockOutDate  = new Date();
+                    // save to shared preferences
+                    clockOutDateMilis = clockOutDate.getTime();
+                    Preferences.setStoredClockOutDate(getApplicationContext(), clockOutDateMilis);
+                    // update UI
                     outTimeStamp = new SimpleDateFormat("hh:mm a").format(clockOutDate);
-                    Log.d(outTimeStamp, "Timestamp out");
-
-                    // Show user time in text view
                     mClockOutTimeTV.setText(outTimeStamp);
 
-                    // Get Location
-                    //clockOutLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
-                    //Log.d(clockOutLoc, "Location Out");
+                    // Set clock out location
+                    // pull location info
+                    // append string of google maps url with lat and long info
+                    // save to shared preferences as current job clock out location
 
-                    totalTime = clockOutTime - clockInTime;
-                    Log.d(String.valueOf(totalTime), "Total time");
+                    setButtonToDone();
 
-                    // change clock out button to be inactive
-                    cvt.setCardBackgroundColor(R.color.material_grey_600);
-                    mClockTextView.setText(R.string.done_button);
-
-                    // Alert user to hit send to send email
+                    // Remind user to hit Send to actually send the job
                     AlertDialog.Builder builder = new AlertDialog.Builder(ClockInActivity.this, R.style.AppCompatAlertDialogStyle);
                     builder.setTitle("Job Summary");
-                    builder.setMessage("You worked a total of " + totalTime + " hours." +
+                    builder.setMessage("You worked a total of " +
+                            getElapsedTime(clockInDate, clockOutDate) +
                             "\n Press the SEND button to send this job to your employer.");
                     builder.setPositiveButton("Ok", null);
                     builder.show();
 
                 } else if (clockedIn && clockedOut){
                     // This all may not be necessary - we'll see.
-                    // Button should do nothing
                 }
             }
         });
@@ -149,6 +195,7 @@ public class ClockInActivity extends AppCompatActivity {
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // CLEAR CLOCK IN DATA
+                            clearCurrentJob();
 
                         }
                     });
@@ -167,11 +214,7 @@ public class ClockInActivity extends AppCompatActivity {
                 builder.setMessage("Are you sure you want to send these times and locations?");
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // Grab information
-                        mClient = (EditText) findViewById(R.id.client_etext_field);
-                        String clientName = mClient.getText().toString();
-                        mDescription = (EditText) findViewById(R.id.desc_etext_field);
-                        String jobDesc = mDescription.getText().toString();
+
                         // Compile email body
                         emailBody = buildEmailBody();
                         // Send email
@@ -189,6 +232,7 @@ public class ClockInActivity extends AppCompatActivity {
                                 }
                             }
                         }).start();
+
                     }
                 });
                 builder.setNegativeButton("Cancel", null);
@@ -223,7 +267,33 @@ public class ClockInActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Preferences.setStoredClient(getApplicationContext(), mClient.getText().toString());
+        Preferences.setStoredDescription(getApplicationContext(), mDescription.getText().toString());
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String clientText = Preferences.getStoredClient(getApplicationContext());
+        if ( clientText != null && clientText != "" ) {
+            mClient.setText(clientText);
+        }
+
+        String descText = Preferences.getStoredDescription(getApplicationContext());
+        if ( descText != null && descText != "" ) {
+            mDescription.setText(descText);
+        }
+
+    }
+
     public String buildEmailBody() {
+
         String body = "";
 
         body += Preferences.getStoredUserName(getApplicationContext()) + "\n";
@@ -231,19 +301,89 @@ public class ClockInActivity extends AppCompatActivity {
         body += "Punch In: \t";
         DateFormat calDateFormat = DateFormat.getDateInstance();
         body += calDateFormat.format(clockInDate) + "\t";
-        body += inTimeStamp + "\n";
+        body += inTimeStamp + "\t@\t";
+        body += "\n"; // append location in string
 
         body += "Punch Out: \t";
         body += calDateFormat.format(clockOutDate) + "\t";
-        body += outTimeStamp + "\n";
+        body += outTimeStamp + "\t@\t";
+        body += "\n"; // append location out string
 
-        body += "Punch In Location: \n\n";
-        body += "Punch Out Location: \n\n";
+        body += "Total time spent: " +  getElapsedTime(clockInDate, clockOutDate) + " \n";
 
         body += "Client: \n" + mClient.getText().toString() + "\n";
         body += "Description: \n" + mDescription.getText().toString();
 
         Log.d("body", body);
         return body;
+
+    }
+
+    private String getElapsedTime (Date clockInDate, Date clockOutDate) {
+
+        Calendar calIn = Calendar.getInstance();
+        Calendar calOut = Calendar.getInstance();
+        calIn.setTime(clockInDate);
+        calOut.setTime(clockOutDate);
+        long milisIn = calIn.getTimeInMillis();
+        long milisOut = calOut.getTimeInMillis();
+        long diff = milisOut - milisIn;
+
+        long elapsedTime = diff / 1000;
+        String format = String.format("%%0%dd", 2);
+        String minutes = String.format(format, ((elapsedTime % 3600) / 60));
+        String hours = String.format(format, (elapsedTime / 3600));
+
+        return hours + " hour(s) and " + minutes + " minutes.";
+
+    }
+
+
+    private void setButtonToClockIn () {
+
+        cvt = (CardView)findViewById(R.id.time_card_view);
+        cvt.setCardBackgroundColor(Color.parseColor("#4CAF50"));
+        mClockTextView.setText(R.string.clock_in_button);
+        return;
+    }
+
+    private void setButtonToClockOut () {
+
+        cvt = (CardView)findViewById(R.id.time_card_view);
+        cvt.setCardBackgroundColor(Color.parseColor("#FF5252"));
+        mClockTextView.setText(R.string.clock_out_button);
+        return;
+
+    }
+
+    private void setButtonToDone () {
+
+        cvt = (CardView)findViewById(R.id.time_card_view);
+        cvt.setCardBackgroundColor(R.color.material_grey_600);
+        mClockTextView.setText(R.string.done_button);
+        return;
+
+    }
+
+
+    private void clearCurrentJob () {
+
+        // CLEAR JOB DATA
+        Preferences.setStoredClockInDate(getApplicationContext(), 0);
+        Preferences.setStoredClockOutDate(getApplicationContext(), 0);
+        Preferences.setStoredInLocation(getApplicationContext(), null);
+        Preferences.setStoredOutLocation(getApplicationContext(), null);
+        Preferences.setStoredClient(getApplicationContext(), null);
+        Preferences.setStoredDescription(getApplicationContext(), null);
+        // RESET UI
+        setButtonToClockIn();
+        mClockInTimeTV.setText("N/A");
+        mClockOutTimeTV.setText("N/A");
+        mClient.setText("");
+        mDescription.setText("");
+        // set correct states
+        clockedIn = false;
+        clockedOut = false;
+
     }
 }
