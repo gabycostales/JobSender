@@ -139,7 +139,7 @@ public class MyLocation extends Service implements LocationListener {
     }
 
     //Check GPS/Wifi enabled, return boolean
-    public boolean CanGetLocation(){
+    public boolean canGetLocation(){
         return this.canGetLocation;
     }
 

@@ -49,9 +49,11 @@ public class ClockInActivity extends AppCompatActivity {
     long clockInDateMilis;
     long clockOutDateMilis;
 
-    Location location;
-    String clockInLoc = null;
-    String clockOutLoc = null;
+    MyLocation clockInLoc;
+    MyLocation clockOutLoc;
+
+    String firstLocation = "";
+    String finalLocation = "";
 
     boolean clockedIn = false;
     boolean clockedOut = false;
@@ -112,9 +114,6 @@ public class ClockInActivity extends AppCompatActivity {
         }
 
 
-        //Build Google API Client - to use to grab location
-        // MyLocation.buildGoogleApiClient();
-
         // Clock In and Out
         cvt = (CardView)findViewById(R.id.time_card_view);
         cvt.setOnClickListener(new View.OnClickListener() {
@@ -135,12 +134,17 @@ public class ClockInActivity extends AppCompatActivity {
                     mClockInTimeTV.setText(inTimeStamp);
 
                     //Find location
-                    //clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + locatioxdon.getLongitude();
-                    //Log.d(clockInLoc, "Location In");
-                    // Set clock in location
-                    // pull location info
-                    // append string of google maps url with lat and long info
-                    // save to shared preferences as current job clock in location
+                    //Create Class object
+                    clockInLoc = new MyLocation(ClockInActivity.this);
+                    //check if GPS enabled
+                    if(clockInLoc.canGetLocation()){
+                        double latitude = clockInLoc.getLatitude();
+                        double longitude = clockInLoc.getLongitude();
+                        //append to global string location variable
+                        firstLocation = "http://maps.google.com?q=" + latitude + "," + longitude;
+                    } else {
+                        clockInLoc.showSettingsAlert();
+                    }
 
                     setButtonToClockOut();
 
@@ -165,6 +169,16 @@ public class ClockInActivity extends AppCompatActivity {
                     // pull location info
                     // append string of google maps url with lat and long info
                     // save to shared preferences as current job clock out location
+                    clockOutLoc = new MyLocation(ClockInActivity.this);
+                    //check if GPS enabled
+                    if(clockOutLoc.canGetLocation()){
+                        double latitude = clockOutLoc.getLatitude();
+                        double longitude = clockOutLoc.getLongitude();
+                        //append to global string location variable
+                        finalLocation = "http://maps.google.com?q=" + latitude + "," + longitude;
+                    } else {
+                        clockOutLoc.showSettingsAlert();
+                    }
 
                     setButtonToDone();
 
