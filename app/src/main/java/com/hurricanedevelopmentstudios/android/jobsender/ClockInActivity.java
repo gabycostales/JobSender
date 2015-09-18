@@ -14,15 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.location.Location;
-import android.location.LocationListener;
-import android.widget.Toast;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.*;
-import android.support.v4.app.FragmentActivity;
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -133,15 +124,16 @@ public class ClockInActivity extends AppCompatActivity {
                     inTimeStamp = new SimpleDateFormat("hh:mm a").format(clockInDate);
                     mClockInTimeTV.setText(inTimeStamp);
 
-                    //Find location
-                    //Create Class object
+                    // Find location
+                    // Create Class object
                     clockInLoc = new MyLocation(ClockInActivity.this);
                     //check if GPS enabled
                     if(clockInLoc.canGetLocation()){
                         double latitude = clockInLoc.getLatitude();
                         double longitude = clockInLoc.getLongitude();
-                        //append to global string location variable
+                        // append to global string location variable
                         firstLocation = "http://maps.google.com?q=" + latitude + "," + longitude;
+                        Preferences.setStoredInLocation(getApplicationContext(), firstLocation);
                     } else {
                         clockInLoc.showSettingsAlert();
                     }
@@ -176,6 +168,7 @@ public class ClockInActivity extends AppCompatActivity {
                         double longitude = clockOutLoc.getLongitude();
                         //append to global string location variable
                         finalLocation = "http://maps.google.com?q=" + latitude + "," + longitude;
+                        Preferences.setStoredOutLocation(getApplicationContext(), finalLocation);
                     } else {
                         clockOutLoc.showSettingsAlert();
                     }
@@ -246,6 +239,7 @@ public class ClockInActivity extends AppCompatActivity {
                                 }
                             }
                         }).start();
+                        clearCurrentJob();
 
                     }
                 });
@@ -316,12 +310,12 @@ public class ClockInActivity extends AppCompatActivity {
         DateFormat calDateFormat = DateFormat.getDateInstance();
         body += calDateFormat.format(clockInDate) + "\t";
         body += inTimeStamp + "\t@\t";
-        body += "\n"; // append location in string
+        body += firstLocation + "\n"; // append location in string
 
         body += "Punch Out: \t";
         body += calDateFormat.format(clockOutDate) + "\t";
         body += outTimeStamp + "\t@\t";
-        body += "\n"; // append location out string
+        body += finalLocation + "\n"; // append location out string
 
         body += "Total time spent: " +  getElapsedTime(clockInDate, clockOutDate) + " \n";
 
