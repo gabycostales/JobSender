@@ -35,7 +35,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/user_name_title"
-                android:id="@+id/textView"
                 android:layout_marginTop="15dp"/>
 
             <EditText
@@ -43,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:ems="10"
-                android:id="@+id/editText"
+                android:id="@+id/nameTextField"
                 android:layout_marginTop="10dp"/>
 
             <TextView
@@ -51,13 +50,12 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/subject_line_title"
-                android:id="@+id/textView2"
                 android:layout_marginTop="15dp"/>
 
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText2"
+                android:id="@+id/subjectTextField"
                 android:layout_marginTop="10dp" />
 
             <TextView
@@ -81,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:ems="10"
-                android:id="@+id/editText3"
+                android:id="@+id/recipientsTextField"
                 android:layout_marginTop="10dp" />
 
         </LinearLayout>
