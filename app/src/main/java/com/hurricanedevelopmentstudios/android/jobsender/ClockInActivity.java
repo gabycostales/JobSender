@@ -71,16 +71,7 @@ public class ClockInActivity extends AppCompatActivity {
         mClockInTimeTV = (TextView)findViewById(R.id.clockInTimeTextView);
         mClockOutTimeTV = (TextView)findViewById(R.id.clockOutTimeTextView);
 
-
-<<<<<<< HEAD
-        //Build Google API Client - to use to grab location
-        MyLocation.buildGoogleApiClient();
-
-
-        //Set Activity for when user clocks in and out
-=======
         // Clock In and Out
->>>>>>> origin/master
         cvt = (CardView)findViewById(R.id.time_card_view);
         cvt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +90,7 @@ public class ClockInActivity extends AppCompatActivity {
                     mClockInTimeTV.setText(inTimeStamp);
 
                     //Find location
-                    //clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + location.getLongitude();
+                    //clockInLoc = "http://maps.google.com/maps?z=128t=m&q=loc:" + location.getLatitude() + "+" + locatioxdon.getLongitude();
                     //Log.d(clockInLoc, "Location In");
 
                     // Change button
@@ -232,8 +223,6 @@ public class ClockInActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-<<<<<<< HEAD
-=======
     public String buildEmailBody() {
         String body = "";
 
@@ -257,5 +246,4 @@ public class ClockInActivity extends AppCompatActivity {
         Log.d("body", body);
         return body;
     }
->>>>>>> origin/master
 }
